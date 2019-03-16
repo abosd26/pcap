@@ -7,8 +7,7 @@
 #include <string.h>
 
 extern u16 icmp_req;
-void 
-	fill_iphdr ( struct ip *ip_hdr , const char* dst_ip)
+void fill_iphdr ( struct ip *ip_hdr , const char* dst_ip)
 {
 	//initialization
 	memset(ip_hdr, 0, sizeof(struct ip));
@@ -30,8 +29,7 @@ void
 	inet_aton(dst_ip, &(ip_hdr->ip_dst));
 }
 
-void
-	fill_icmphdr (struct icmphdr *icmp_hdr)
+void fill_icmphdr (struct icmphdr *icmp_hdr)
 {
 	//initialization
 	memset(icmp_hdr, 0, sizeof(struct icmphdr));
@@ -48,8 +46,7 @@ void
 }
 
 //u8 = unsigned char, u16 = unsigned short, u32 = unsigned int
-u16
-	fill_cksum(struct icmphdr* icmp_hdr)
+u16 fill_cksum(struct icmphdr* icmp_hdr)
 {	
 	int nleft = ICMP_PACKET_SIZE;
 	int sum = 0;
