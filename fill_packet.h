@@ -23,16 +23,16 @@ typedef struct
 } myicmp ;
 
 void 
-fill_iphdr ( struct ip *ip_hdr, const char* dst_ip);
+	fill_iphdr ( struct ip *ip_hdr, const char* dst_ip);
 
 void
-fill_icmphdr (struct icmphdr *icmp_hdr);
+	fill_icmphdr (struct icmphdr *icmp_hdr);
 
 u16
-fill_cksum ( struct icmphdr *icmp_hdr);
+	fill_cksum ( struct icmphdr *icmp_hdr);
 
 int IsValidIP(const char* str);
 
 int IsNumber(const char* str);
 #endif
- 
+

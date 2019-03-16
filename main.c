@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	int sockfd;
 	int on = 1;
 	int usageInform = 0;
-	
+
 	pid = getpid();
 	struct sockaddr_in dst;
 	int count = DEFAULT_SEND_COUNT;
@@ -70,9 +70,9 @@ int main(int argc, char* argv[])
 		}
 	}
 	//need superuser authority to start server
-        if(getuid() != 0){
+	if(getuid() != 0){
 		usageInform = 1;
-        }
+	}
 	if(usageInform){
 		printf("usage: sudo ./myping -g gateway [-w timeout(in msec)] [-c count] target_ip\n");
 		exit(1);
@@ -103,13 +103,13 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	 /* 
-	 * in pcap.c, initialize the pcap
-	 */
+	/* 
+	* in pcap.c, initialize the pcap
+	*/
 	pcap_init(gatewayIP , timeout);
 
-	
-	
+
+
 	if((sockfd = socket(AF_INET, SOCK_RAW , IPPROTO_RAW)) < 0)
 	{
 		perror("socket");
@@ -121,33 +121,33 @@ int main(int argc, char* argv[])
 		perror("setsockopt");
 		exit(1);
 	}
-	
-	
-	
+
+
+
 	/*
-	 *   Use "sendto" to send packets, and use "pcap_get_reply"(in pcap.c) 
- 	 *   to get the "ICMP echo response" packets.
-	 *	 You should reset the timer every time before you send a packet.
-	 */
+	*   Use "sendto" to send packets, and use "pcap_get_reply"(in pcap.c) 
+	*   to get the "ICMP echo response" packets.
+	*	 You should reset the timer every time before you send a packet.
+	*/
 	dst.sin_family = AF_INET;
 	inet_aton(gatewayIP, &(dst.sin_addr));
 	printf("Ping %s (data size = %d, id = 0x%x, timeout = %d ms, count = %d):\n", dstIP, ICMP_DATA_SIZE, pid, timeout, count);
 	for(int i = 0; i < count; i++){
 		//fill ip option
 		myicmp *packet = (myicmp*)malloc(PACKET_SIZE);
-		 //no operation
+		//no operation
 		int nop = IPOPT_NOP;
 		memcpy(&(packet->ip_option[0]), (u8 *)&nop, IP_OPTION_SIZE);
-		 //type = loose source route
+		//type = loose source route
 		int type = IPOPT_LSRR;
 		memcpy(&(packet->ip_option[1]), (u8 *)&type, IP_OPTION_SIZE - 1);
-	 	 //length = 7(+ nop = 8)
+		//length = 7(+ nop = 8)
 		int len = 7;
 		memcpy(&(packet->ip_option[2]), (u8 *)&len, IP_OPTION_SIZE - 2);
-	 	 //pointer
+		//pointer
 		int pointer = 4;
 		memcpy(&(packet->ip_option[3]), (u8 *)&pointer, IP_OPTION_SIZE - 3);
-	 	 //source route(only one => destination ip)
+		//source route(only one => destination ip)
 		unsigned char value[4] = {0};
 		int index = 0;
 		for(int i = 0; i < strlen(dstIP); i++){
@@ -168,10 +168,10 @@ int main(int argc, char* argv[])
 		fill_icmphdr(&(packet->icmp_hdr));
 		//set timer
 		gettimeofday(&start, NULL);
-	 	if(sendto(sockfd, packet, PACKET_SIZE, 0, (struct sockaddr *)&dst, sizeof(dst)) < 0)
+		if(sendto(sockfd, packet, PACKET_SIZE, 0, (struct sockaddr *)&dst, sizeof(dst)) < 0)
 		{
-				perror("sendto");
-				exit(1);
+			perror("sendto");
+			exit(1);
 		}
 		free(packet);
 		int n = pcap_get_reply(dstIP);
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 		else{
 			double duration = (double)(stop.tv_usec - start.tv_usec) / 1000.0;
 			printf("time = %.3lfms\n", duration);
-                	printf("\tRouter: %s\n", gatewayIP);
+			printf("\tRouter: %s\n", gatewayIP);
 		}
 		//stop = clock();
 		//printf("time : %lf\n", (double)(stop - start) / CLOCKS_PER_SEC * 1000);

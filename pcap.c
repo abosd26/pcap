@@ -20,17 +20,17 @@ static struct pcap_pkthdr hdr;
 //
 static char fixed_filter[FILTER_STRING_SIZE] = "";
 /*
- * This function is almost completed.
- * But you still need to edit the filter string.
- */
+* This function is almost completed.
+* But you still need to edit the filter string.
+*/
 void pcap_init( const char* dst_ip ,int timeout )
 {	
 	int ret;
 	char errbuf[PCAP_ERRBUF_SIZE];
-	
+
 	bpf_u_int32 netp;
 	bpf_u_int32 maskp;
-	
+
 	struct in_addr addr;
 	//bpf : Berkeley Packet Filter => for packet capture	
 	struct bpf_program fcode;
@@ -40,31 +40,31 @@ void pcap_init( const char* dst_ip ,int timeout )
 		fprintf(stderr,"%s\n",errbuf);
 		exit(1);
 	}
-	
+
 	addr.s_addr = netp;
 	net = inet_ntoa(addr);	
 	if(net == NULL){
 		perror("inet_ntoa");
 		exit(1);
 	}
-	
+
 	addr.s_addr = maskp;
 	mask = inet_ntoa(addr);
 	if(mask == NULL){
 		perror("inet_ntoa");
 		exit(1);
 	}
-	
+
 	//open the device store in dev to create a sniffing session for reading bytes in received packets in Promiscuous mode(sniff all traffic on wire); return value p = session handle	
 	p = pcap_open_live(dev, 8000, 1, timeout, errbuf);
 	if(!p){
 		fprintf(stderr,"%s\n",errbuf);
 		exit(1);
 	}
-	
+
 	/*
-	 *    you should complete your filter string before pcap_compile
-	 */
+	*    you should complete your filter string before pcap_compile
+	*/
 	//destination IP should be router IP
 	strcat(strcat(filter_string, "src "), dst_ip);
 	//icmp type should be ping reply packet
@@ -104,8 +104,8 @@ int pcap_get_reply( const char* dst_ip )
 	strcpy(filter_string, fixed_filter);
 	char tmp[50];
 	strcat(filter_string, " and icmp[6:2] == ");
-        sprintf(tmp, "0x%x", icmp_req);
-        strcat(filter_string, tmp);
+	sprintf(tmp, "0x%x", icmp_req);
+	strcat(filter_string, tmp);
 	//strcat(filter_string, "1");
 	inet_aton(mask, (struct in_addr *)&maskp);
 	//printf("filter string : %s\n", filter_string);
@@ -121,9 +121,9 @@ int pcap_get_reply( const char* dst_ip )
 	}
 	ptr = pcap_next(p, &hdr);
 	/*
-	 * google "pcap_next" to get more information
-	 * and check the packet that ptr pointed to.
-	 */
+	* google "pcap_next" to get more information
+	* and check the packet that ptr pointed to.
+	*/
 	//stop = clock();
 	//printf("Reply from %s: ", dst_ip);
 	if(ptr != NULL){

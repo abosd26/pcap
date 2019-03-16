@@ -8,7 +8,7 @@
 
 extern u16 icmp_req;
 void 
-fill_iphdr ( struct ip *ip_hdr , const char* dst_ip)
+	fill_iphdr ( struct ip *ip_hdr , const char* dst_ip)
 {
 	//initialization
 	memset(ip_hdr, 0, sizeof(struct ip));
@@ -31,7 +31,7 @@ fill_iphdr ( struct ip *ip_hdr , const char* dst_ip)
 }
 
 void
-fill_icmphdr (struct icmphdr *icmp_hdr)
+	fill_icmphdr (struct icmphdr *icmp_hdr)
 {
 	//initialization
 	memset(icmp_hdr, 0, sizeof(struct icmphdr));
@@ -49,35 +49,35 @@ fill_icmphdr (struct icmphdr *icmp_hdr)
 
 //u8 = unsigned char, u16 = unsigned short, u32 = unsigned int
 u16
-fill_cksum(struct icmphdr* icmp_hdr)
+	fill_cksum(struct icmphdr* icmp_hdr)
 {	
 	int nleft = ICMP_PACKET_SIZE;
-        int sum = 0;
-        unsigned short *w = (unsigned short *)icmp_hdr;
-        unsigned short answer = 0;
-        
-        while( nleft > 1 ) {
-                sum += *w++;
-                nleft -= 2;
-        }
-        
-        if( nleft == 1 ) {
-                *(unsigned char *) (&answer) = *(unsigned char *) w;
-                sum += answer;
-        }
-        
-        sum = (sum >> 16) + (sum & 0xFFFF);
-        sum += (sum >> 16);
-        answer = ~sum;
-        return (answer);
+	int sum = 0;
+	unsigned short *w = (unsigned short *)icmp_hdr;
+	unsigned short answer = 0;
+
+	while( nleft > 1 ) {
+		sum += *w++;
+		nleft -= 2;
+	}
+
+	if( nleft == 1 ) {
+		*(unsigned char *) (&answer) = *(unsigned char *) w;
+		sum += answer;
+	}
+
+	sum = (sum >> 16) + (sum & 0xFFFF);
+	sum += (sum >> 16);
+	answer = ~sum;
+	return (answer);
 }
 int IsValidIP(const char* str){
-        struct sockaddr_in sa;
-        int result = inet_pton(AF_INET, str, &(sa.sin_addr));
-        if(result == 1){
-                return 1;
-        }
-        return 0;
+	struct sockaddr_in sa;
+	int result = inet_pton(AF_INET, str, &(sa.sin_addr));
+	if(result == 1){
+		return 1;
+	}
+	return 0;
 }
 int IsNumber(const char* str){
 	for(int i = 0; i < strlen(str); i++){
